@@ -1,5 +1,13 @@
 function CCSEddyDetector(pathin,basein,sy,ey,sm,em,depi,depe,Isoi,Isoe,crar,crow,OW_smooth,tnum_critic,plotflag)
-
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Takeyoshi Nagai@UMassD 12/9/2010 -- Applied in the California Current System
+% see Nagai et al. 2015. https://doi.org/10.1002/2015JC010889
+% In this modified version, we apply this algorithm in the Peru-Chile EBUS
+% in Rosales-Quintana et al
+%
+% Detection of eddies
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 em0=em;
 % em=12;
 % input file check
@@ -23,12 +31,10 @@ if flagfile==-1
 end
 
 
-%%% here any data bc it is just taking grid data info
 pathgridn = ['/path_outputs/'];
-
-fng = 'data.nc';
+fng = 'any_outputs_for getting_properties.nc';
 ncz=netcdf.open(fullfile(pathgridn,fng),'nc_nowrite');
-[zw,dzw,err] = getZ_DZTN(ncz,1,1);
+%[zw,dzw,err] = getZ_DZTN(ncz,1,1);
 [zr,dzr,err] = getZ_DZTN(ncz,0,1);
 zu=rho2u_3d(zr);
 zv=rho2v_3d(zr);
@@ -50,9 +56,6 @@ netcdf.close(ncz)
 %-------------------------------------------------
 % starting the main loop
 %-------------------------------------------------
-% em0=em;
-% em=12;
-
 for iy=sy:1:ey
   j=0;  
     for im=sm:1:em
@@ -75,7 +78,7 @@ for iy=sy:1:ey
             sigma3d = sigmat(temp,sal);
 
 
-            % getting velocities with the same size as for sigma
+            % getting velocities 
             ur=0.5.*(u(:,:,1:end-1)+u(:,:,2:end));
             ur=cat(3,u(:,:,1),ur,u(:,:,end));
             vr=0.5.*(v(:,1:end-1,:)+v(:,2:end,:));
@@ -110,12 +113,12 @@ for iy=sy:1:ey
 
 
             % detecting eddies
-            [data(j).eddy] = DetectEddyOW(usurf,vsurf,usub,vsub,lon,lat,xi,yi,dx,dy,f,maskr,urx,vrx,sigma3dx,crar,crow,OW_smooth,tnum_critic,plotflag);
+            [data(j).eddy] = DetectEddyOW(usurf,vsurf,uIso,vIso,lon,lat,xi,yi,dx,dy,f,maskr,urx,vrx,sigma3dx,crar,crow,OW_smooth,tnum_critic,plotflag);
 
         end
 
     end
-    outfn=sprintf(['Eddy_' basein 'EddyDetect.mat'],iy);
+    outfn=sprintf(['output_detected.mat'],iy);
     netcdf.close(ncin)
     disp([outfn ' : now saving...'])
     save(outfn,'data','xi','yi','lon','lat','dx','dy')
