@@ -3,7 +3,7 @@ function eddy = DetectEddyOW(usurf,vsurf,usub,vsub,loni,lati,xi,yi,dx,dy,maskr,O
 % Takeyoshi Nagai@UMassD 12/9/2010 -- Applied in the California Current System
 % see Nagai et al. 2015. https://doi.org/10.1002/2015JC010889
 % In this modified version, we apply this algorithm in the Peru-Chile EBUS
-% in Rosales-Quintana et al
+% % in Rosales-Quintana et al -- 2024, september.
 %
 % Detection of eddies
 %
